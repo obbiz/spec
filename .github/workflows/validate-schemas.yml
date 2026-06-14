@@ -1,0 +1,52 @@
+name: Validate Schemas and Bundles
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd scripts && npm install
+
+      - name: Unzip test fixtures
+        run: |
+          mkdir -p /tmp/obb-validate
+          for bundle in test-fixtures/*.obbiz; do
+            name=$(basename "$bundle" .obbiz)
+            unzip -o "$bundle" -d "/tmp/obb-validate/$name"
+          done
+          if [ -d test-fixtures/invalid ]; then
+            for bundle in test-fixtures/invalid/*.obbiz; do
+              name=$(basename "$bundle" .obbiz)
+              unzip -o "$bundle" -d "/tmp/obb-validate/invalid-$name"
+            done
+          fi
+
+      - name: Validate schemas and test fixtures
+        run: cd scripts && npx tsx ci-validate.ts
+
+      - name: Verify manifest.schemaVersion matches v0.1.0
+        run: |
+          for manifest in /tmp/obb-validate/*/manifest.json; do
+            version=$(jq -r '.schemaVersion' "$manifest")
+            if [ "$version" != "0.1.0" ]; then
+              echo "ERROR: $manifest has schemaVersion '$version', expected '0.1.0'"
+              exit 1
+            fi
+            echo "OK: $manifest has schemaVersion 0.1.0"
+          done

@@ -1,0 +1,23 @@
+{
+  "name": "obb-test-fixture-generator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OBB specification scripts (test fixture generator & CI validator)",
+  "scripts": {
+    "build": "tsc",
+    "generate": "tsx generate-test-bundles.ts",
+    "ci-validate": "tsx ci-validate.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "fast-json-stable-stringify": "^2.1.0",
+    "fflate": "^0.8.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
+  }
+}

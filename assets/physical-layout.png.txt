@@ -1,0 +1,52 @@
+Physical Layout Diagram Description
+====================================
+
+This diagram should illustrate the internal structure of an OBB (.obbiz) file.
+
+## Visual Layout
+
+The central element is a ZIP archive icon/box labeled "company-workspace.obbiz".
+Inside the box, show the directory tree:
+
+```
+company-workspace.obbiz
+├── manifest.json
+├── business.json
+├── media/
+│   ├── branding/
+│   │   └── logo.png
+│   ├── team/
+│   │   └── alex-avatar.jpg
+│   └── products/
+│       ├── dashboard.webp
+│       └── screenshot-1.png
+├── views/
+│   ├── business-plan.json
+│   └── pitch-deck.json
+└── extensions/
+    └── myplugin/
+        ├── config.json
+        └── media-references.json
+```
+
+## Arrows and Relationships
+
+1. From `business.json` → `media/branding/logo.png` labeled "media://branding/logo.png"
+2. From `business.json` → `media/team/alex-avatar.jpg` labeled "media://team/alex-avatar.jpg"
+3. From `views/business-plan.json` → `business.json` labeled "dataPaths references"
+4. From `extensions/myplugin/media-references.json` → `media/` labeled "explicit asset declaration"
+
+## Layer Highlights
+
+Use three coloured bands or brackets on the left:
+
+- **Data Layer** (blue): manifest.json, business.json
+- **Presentation Layer** (green): views/*.json
+- **Extensions Layer** (orange): extensions/*
+
+## Visual Style
+
+- ZIP box with dashed border
+- Files as document icons (folders for directories)
+- Arrows with dashed lines for references
+- Colour coding by layer

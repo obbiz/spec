@@ -1,0 +1,316 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://obbiz.spec/definitions/v0.1.0/business.schema.json",
+  "title": "OBB Business Data",
+  "description": "Schema for business.json in an Open Business Bundle (v0.1.0)",
+  "type": "object",
+  "required": [
+    "global",
+    "identity"
+  ],
+  "properties": {
+    "global": {
+      "type": "object",
+      "description": "Global settings used across the business data.",
+      "required": ["currency", "baseLanguage"],
+      "properties": {
+        "currency": { "type": "string", "minLength": 3, "maxLength": 3 },
+        "baseLanguage": { "type": "string", "pattern": "^[a-z]{2,3}(-[A-Z][a-z]+)*$" },
+        "timezone": { "type": "string" },
+        "measurementSystem": { "type": "string", "enum": ["metric", "imperial"] }
+      },
+      "additionalProperties": false
+    },
+    "identity": {
+      "type": "object",
+      "description": "Core identity information about the business.",
+      "required": ["companyName"],
+      "properties": {
+        "companyName": { "type": "string" },
+        "tagline": { "type": "string" },
+        "logo": { "$ref": "#/$defs/mediaUri" },
+        "website": { "type": "string", "format": "uri" },
+        "socialProfiles": {
+          "type": "object",
+          "description": "Social media profiles keyed by platform name.",
+          "additionalProperties": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "legalProfile": {
+      "type": "object",
+      "description": "Legal entity information.",
+      "properties": {
+        "legalName": { "type": "string" },
+        "entityType": { "type": "string" },
+        "jurisdiction": { "type": "string" },
+        "dateFounded": { "type": "string", "format": "date" },
+        "taxId": { "type": "string" },
+        "address": {
+          "type": "object",
+          "properties": {
+            "street": { "type": "string" },
+            "city": { "type": "string" },
+            "postalCode": { "type": "string" },
+            "country": { "type": "string", "minLength": 2, "maxLength": 2 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "executiveSummary": {
+      "type": "object",
+      "description": "High-level summary of the business.",
+      "properties": {
+        "mission": { "type": "string" },
+        "vision": { "type": "string" },
+        "problem": { "type": "string" },
+        "solution": { "type": "string" },
+        "elevatorPitch": { "type": "string" },
+        "keyHighlights": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "valueProposition": {
+      "type": "array",
+      "description": "Array of value proposition items.",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "description"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "icon": { "$ref": "#/$defs/mediaUri" },
+          "metrics": {
+            "type": "object",
+            "additionalProperties": { "type": ["string", "number"] }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "managementTeam": {
+      "type": "object",
+      "description": "Team composition.",
+      "properties": {
+        "founders": { "type": "array", "items": { "$ref": "#/$defs/teamMember" } },
+        "advisors": { "type": "array", "items": { "$ref": "#/$defs/teamMember" } },
+        "boardMembers": { "type": "array", "items": { "$ref": "#/$defs/teamMember" } }
+      },
+      "additionalProperties": false
+    },
+    "productsServices": {
+      "type": "array",
+      "description": "Array of products or services offered.",
+      "items": {
+        "type": "object",
+        "required": ["name", "description"],
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "pricingModel": { "type": "string" },
+          "stage": { "type": "string" },
+          "screenshots": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/mediaUri" }
+          },
+          "features": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "marketAnalysis": {
+      "type": "object",
+      "description": "Market and competitive analysis.",
+      "properties": {
+        "targetMarket": { "type": "string" },
+        "competitors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "strengths": { "type": "array", "items": { "type": "string" } },
+              "weaknesses": { "type": "array", "items": { "type": "string" } }
+            },
+            "additionalProperties": false
+          }
+        },
+        "swot": {
+          "type": "object",
+          "properties": {
+            "strengths": { "type": "array", "items": { "type": "string" } },
+            "weaknesses": { "type": "array", "items": { "type": "string" } },
+            "opportunities": { "type": "array", "items": { "type": "string" } },
+            "threats": { "type": "array", "items": { "type": "string" } }
+          },
+          "additionalProperties": false
+        },
+        "marketSize": {
+          "type": "object",
+          "properties": {
+            "tam": { "type": "number" },
+            "sam": { "type": "number" },
+            "som": { "type": "number" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "marketingStrategy": {
+      "type": "object",
+      "description": "Marketing and go-to-market strategy.",
+      "properties": {
+        "channels": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "contentPlan": { "type": "string" },
+        "cacEstimate": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+    "operations": {
+      "type": "object",
+      "description": "Operational details.",
+      "properties": {
+        "teamSize": { "type": "integer", "minimum": 0 },
+        "techStack": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "ipPatents": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "compliance": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "roadmap": {
+      "type": "object",
+      "description": "Business roadmap with milestones.",
+      "properties": {
+        "milestones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["date", "title", "status"],
+            "properties": {
+              "date": { "type": "string", "format": "date" },
+              "title": { "type": "string" },
+              "status": {
+                "type": "string",
+                "enum": ["planned", "in-progress", "completed"]
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "financialStatements": {
+      "type": "object",
+      "description": "Financial data including statements and forecasts.",
+      "properties": {
+        "incomeStatement": { "type": "object" },
+        "balanceSheet": { "type": "object" },
+        "cashFlow": { "type": "object" },
+        "forecasts": { "type": "object" }
+      },
+      "additionalProperties": false
+    },
+    "fundingRequirements": {
+      "type": "object",
+      "description": "Funding needs and structure.",
+      "properties": {
+        "amountNeeded": { "type": "number", "minimum": 0 },
+        "useOfFunds": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": { "type": "string" },
+              "amount": { "type": "number", "minimum": 0 }
+            },
+            "additionalProperties": false
+          }
+        },
+        "offeringStructure": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "riskAnalysis": {
+      "type": "object",
+      "description": "Risk assessment and mitigation.",
+      "properties": {
+        "risks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type", "likelihood", "impact", "mitigation"],
+            "properties": {
+              "type": { "type": "string" },
+              "likelihood": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "impact": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "mitigation": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "appendices": {
+      "type": "array",
+      "description": "Supporting documents (media:// references).",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "url": { "$ref": "#/$defs/mediaUri" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "description": "Vendor-specific extension data.",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "mediaUri": {
+      "type": "string",
+      "pattern": "^media://[a-zA-Z0-9_\\-./]+$",
+      "description": "Media URI referencing a file in the media/ directory."
+    },
+    "teamMember": {
+      "type": "object",
+      "required": ["id", "name", "role"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "bio": { "type": "string" },
+        "imageSrc": { "$ref": "#/$defs/mediaUri" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

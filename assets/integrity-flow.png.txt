@@ -1,0 +1,56 @@
+Integrity Flow Diagram Description
+====================================
+
+This diagram should illustrate the integrity verification pipeline for OBB bundles.
+
+## Flow Chart (left to right)
+
+### Stage 1: Per-File Hashing
+List of files:
+  business.json ──→ SHA-256 ──→ "e3b0c44..."
+  views/business-plan.json ──→ SHA-256 ──→ "a7ffc6f..."
+  media/branding/logo.png ──→ SHA-256 ──→ "1d0258c..."
+  media/team/alex-avatar.jpg ──→ SHA-256 ──→ "9f86d08..."
+
+Arrow down to:
+
+### Stage 2: Integrity Files Map
+Box: manifest.integrity.files
+  {"business.json": "e3b0c44...", "views/business-plan.json": "a7ffc6f...", ...}
+
+Arrow down to:
+
+### Stage 3: Manifest Self-Hash
+Process box:
+  1. Set manifest.integrity.hash = ""
+  2. NFC normalize all string values
+  3. Canonical JSON serialisation
+  4. SHA-256 of UTF-8 bytes
+
+Arrow to:
+
+### Stage 4: Final Manifest
+Box: manifest.json with integrity.hash = "9f86d081..."
+
+## Verification Flow (bottom, right to left)
+
+Start from Stage 4:
+  1. For each file in integrity.files → recompute hash → compare
+  2. Check no unlisted files exist (except manifest.json)
+  3. Recompute self-hash → compare with integrity.hash
+
+Decision diamond: "Match?" → Yes: "Bundle Valid" / No: "INTEGRITY_ERROR"
+
+## Edge Cases to Note
+
+- files other than manifest.json that are not in integrity.files → INTEGRITY_ERROR
+- manifest.json is NOT in integrity.files (covered by self-hash)
+- Missing integrity fields → skip verification (with warning)
+
+## Visual Style
+
+- Blue boxes for data
+- Green boxes for hash computation
+- Red diamonds for validation decisions
+- Solid arrows for data flow
+- Dashed arrows for verification flow

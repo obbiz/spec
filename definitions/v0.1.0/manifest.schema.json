@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://obbiz.spec/definitions/v0.1.0/manifest.schema.json",
+  "title": "OBB Manifest",
+  "description": "Schema for manifest.json in an Open Business Bundle",
+  "type": "object",
+  "required": [
+    "fileFormat",
+    "formatVersion",
+    "schemaVersion",
+    "projectId",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "fileFormat": {
+      "type": "string",
+      "const": "open-business-bundle",
+      "description": "Fixed identifier for the OBB format."
+    },
+    "formatVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "SemVer of the container/ZIP layout spec."
+    },
+    "schemaVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+      "description": "SemVer of the business.json and view schemas."
+    },
+    "projectId": {
+      "type": "string",
+      "pattern": "^urn:obb:project:[0-9A-HJKMNP-TV-Z]{26}$",
+      "description": "URN with a 26-character Crockford Base32 ULID."
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of initial creation."
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of last modification."
+    },
+    "generator": {
+      "type": "object",
+      "description": "Informational generator metadata.",
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "locales": {
+      "type": "array",
+      "description": "BCP 47 language tags; first entry is primary locale.",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-zA-Z]{2,3}(-[a-zA-Z0-9]+)*$"
+      },
+      "minItems": 1
+    },
+    "integrity": {
+      "type": "object",
+      "description": "Integrity hashes for bundle contents.",
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "const": "sha256"
+        },
+        "hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Self-hash of the canonicalised manifest."
+        },
+        "files": {
+          "type": "object",
+          "description": "Map of logical path -> hex SHA-256 of uncompressed content.",
+          "patternProperties": {
+            "^[a-zA-Z0-9_\\-./]+$": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        }
+      },
+      "required": ["algorithm", "hash", "files"],
+      "additionalProperties": false
+    },
+    "custom": {
+      "type": "object",
+      "description": "Freeform application metadata; parsers must ignore unknown keys."
+    }
+  },
+  "additionalProperties": false
+}

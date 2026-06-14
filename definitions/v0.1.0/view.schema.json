@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://obbiz.spec/definitions/v0.1.0/view.schema.json",
+  "title": "OBB View Configuration",
+  "description": "Schema for a view configuration file in an Open Business Bundle",
+  "type": "object",
+  "required": [
+    "viewType",
+    "version",
+    "settings",
+    "contentOrder"
+  ],
+  "properties": {
+    "viewType": {
+      "type": "string",
+      "description": "Identifies the view type (e.g., business-plan, pitch-deck)."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+      "description": "Version of this view configuration."
+    },
+    "settings": {
+      "type": "object",
+      "description": "Global view settings.",
+      "properties": {
+        "paperSize": {
+          "type": "string",
+          "description": "Paper size for print/pdf output."
+        },
+        "styleConfiguration": {
+          "type": "object",
+          "description": "Styling overrides for the view.",
+          "properties": {
+            "primaryColor": { "type": "string" },
+            "mode": { "type": "string", "enum": ["light", "dark"] }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "contentOrder": {
+      "type": "array",
+      "description": "Ordered list of section keys to display.",
+      "items": { "type": "string" }
+    },
+    "sections": {
+      "type": "object",
+      "description": "Per-section styling overrides.",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "layout": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "references": {
+      "type": "object",
+      "description": "External references for this view.",
+      "properties": {
+        "dataPaths": {
+          "type": "array",
+          "description": "RFC 9535 JSONPath expressions relative to business.json root.",
+          "items": {
+            "type": "string",
+            "pattern": "^(?!\\$)[a-zA-Z_\\[\\]*.]+$"
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
